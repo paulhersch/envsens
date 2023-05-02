@@ -1,4 +1,4 @@
-# vim:set tabstop=2:set shiftwidth=2:set expandtab
+# vim:expandtab ts=2 sw=2
 { config, pkgs, ... }:
 
 {
@@ -8,9 +8,9 @@
     ];
 
   nix = {
-    # activate flakes
     settings = {
       auto-optimise-store = true;
+      # activate flakes
       experimental-features = [ "nix-command" "flakes" ];
     };
     # keeps built derivations in gc
@@ -41,10 +41,10 @@
     keyMap = "de-latin1";
   };
 
-  # basic admin account
+  # "admin" account (for ssh in case this is needed)
   users.users.alice = {
     isNormalUser = true;
-    extraGroups = [ ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -54,9 +54,6 @@
 
   services.openssh.enable = true;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
   networking.firewall.enable = true;
 
   system.stateVersion = "22.11";

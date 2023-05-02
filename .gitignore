@@ -1,1 +1,4 @@
+*api/db.sqlite
 */.direnv
+*__pycache__*
+*.tmp

@@ -15,15 +15,19 @@
     flake-utils.lib.eachDefaultSystem (system:
         let
             pkgs = nixpkgs.legacyPackages.${system};
+            py_run_deps = (p: with p; [
+                fastapi
+                uvicorn
+                aiosqlite
+            ]);
         in 
         with pkgs;
         {
             devShell = pkgs.mkShell {
-                nativeBuildInputs = [
+                nativeBuildInputs = with pkgs; [
+                    sqlite
                     (pkgs.python3.withPackages (ps: with ps; [
-                        fastapi
-                        psycopg
-                    ]))
+                    ] ++ (py_run_deps ps)))
                 ];
             };
             # packages.${system}.default = mkDerivation {

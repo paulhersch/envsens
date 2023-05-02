@@ -1,3 +1,4 @@
+# vim:expandtab ts=2 sw=2
 {
   description = "Env Sensor Flake";
 
@@ -15,17 +16,26 @@
       allowUnfree = true;
     };
     pkgs = {
-	nixpkgs = { inherit config; };
+      nixpkgs = { inherit config; };
     };
   in
   {
     nixosConfigurations = {
       envsensor = nixosSystem {
         system = "x86_64-linux";
-	modules = [
-	  ./conf
-	  pkgs
-	];
+	      modules = [
+          ./conf
+          pkgs
+        ];
+      };
+      container = nixosSystem {
+        modules = [
+          ./conf
+          pkgs
+          {
+            boot.isContainer = true;
+          }
+        ];
       };
     };
   };
