@@ -56,8 +56,9 @@
 
                 config = mkIf cfg.enable {
                     systemd.services."envsens" = {
+                        enable = true;
                         description = "Envsens API with ML prediction model";
-                        after = [ "network.target" ];
+                        wantedBy = [ "network.target" ];
                         environment = {
                             DB_PATH="/var/lib/envsens/db.sqlite";
                             TOKEN_PATH="/var/lib/envsens/token";
