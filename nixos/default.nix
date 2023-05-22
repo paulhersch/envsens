@@ -26,6 +26,8 @@
       efiSysMountPoint = "/boot/EFI";
     };
   };
+  
+  services.envsens.enable = true;
 
   networking.hostName = "envsensor";
   networking.networkmanager.enable = true;
@@ -50,11 +52,13 @@
   environment.systemPackages = with pkgs; [
     neovim
     git
+    sqlite
   ];
 
-  services.openssh.enable = true;
-
-  networking.firewall.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8888 ]; 
+  };
 
   system.stateVersion = "22.11";
 }

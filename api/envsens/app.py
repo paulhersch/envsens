@@ -1,10 +1,10 @@
 from fastapi import FastAPI, HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
-import db
-import predictions
 import os
 import aiofiles
+import envsens.db as db
+import envsens.predictions as predictions
 
 TOKEN_PATH = ""
 

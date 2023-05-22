@@ -3,7 +3,8 @@
   description = "Env Sensor Flake";
 
   inputs = {
-	nixpkgs.url = github:NixOS/nixpkgs/nixos-22.11;
+    nixpkgs.url = github:NixOS/nixpkgs/nixos-22.11;
+    envsens.url = "./api";
   };
 
   outputs = { 
@@ -12,25 +13,30 @@
     , ... }@inputs:
   with inputs.nixpkgs.lib;
   let
+    system = "x86_64-linux";
     config = {
       allowUnfree = true;
     };
     pkgs = {
-      nixpkgs = { inherit config; };
+      nixpkgs = {
+        inherit config system;
+      };
     };
   in
   {
     nixosConfigurations = {
-      envsensor = nixosSystem {
+      envsens-server = nixosSystem {
         system = "x86_64-linux";
 	      modules = [
-          ./conf
+          inputs.envsens.nixosModules.apiservice
+          ./nixos
           pkgs
         ];
       };
       container = nixosSystem {
         modules = [
-          ./conf
+          inputs.envsens.nixosModules.apiservice
+          ./nixos
           pkgs
           {
             boot.isContainer = true;

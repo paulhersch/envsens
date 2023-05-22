@@ -19,7 +19,7 @@ If you are installing the config on Your server, you need to specify the target
 flake to use for the installation. After that `nixos-rebuild` will just pick the config
 based on the hostname
 ```shell
-nixos-install --flake .#envsensor 
+nixos-install --flake .#envsens-server 
 ```
 
 ## Testing in Container

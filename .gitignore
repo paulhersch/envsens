@@ -1,4 +1,5 @@
 *api/db.sqlite
+*api/token
 */.direnv
 *__pycache__*
 *.tmp
