@@ -27,7 +27,7 @@ async def db_setup():
     # writeable for tests (if they might ever be written)
     create_historic = """
     CREATE TABLE IF NOT EXISTS "historic" (
-    "timestamp"     TIMESTAMP   NOT NULL    UNIQUE  DEFAULT CURRENT_TIMESTAMP,
+        "timestamp"     TIMESTAMP   NOT NULL    UNIQUE  DEFAULT CURRENT_TIMESTAMP,
         "co"            INTEGER     NOT NULL,
         "rain"          INTEGER     NOT NULL,
         "temp"          INTEGER     NOT NULL,
@@ -56,13 +56,13 @@ async def db_setup():
     await db.close()
 
 
-async def add_data_point(co2: int, rain: bool, temp: int, pressure: int, humidity: int) -> None:
+async def add_data_point(timestamp: int, co2: int, rain: bool, temp: int, pressure: int, humidity: int) -> None:
     sql_insert = """
-        INSERT INTO historic (co, rain, temp, press, humid)
-        VALUES (?,?,?,?,?);
+        INSERT INTO historic (timestamp, co, rain, temp, press, humid)
+        VALUES (datetime(?, 'unixepoch'),?,?,?,?,?);
     """
     db = await aiosqlite.connect(DB_PATH)
-    await db.execute(sql_insert, (co2, rain, temp, pressure, humidity))
+    await db.execute(sql_insert, (timestamp, co2, rain, temp, pressure, humidity))
     await db.commit()
     await db.close()
 
@@ -96,7 +96,6 @@ async def get_predicted_data(hours: int):
         WHERE strftime('%s', timestamp) BETWEEN strftime('%s', 'now') AND strftime('%s', 'now', '{hours} hours')
         ORDER BY timestamp DESC;
     """
-    print(sql_statement)
     db = await aiosqlite.connect(DB_PATH)
     cursor = await db.execute(sql_statement)
     result = await cursor.fetchall()

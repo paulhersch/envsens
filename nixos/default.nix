@@ -29,7 +29,7 @@
   
   services.envsens.enable = true;
 
-  networking.hostName = "envsensor";
+  networking.hostName = "envsens-server";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Berlin";

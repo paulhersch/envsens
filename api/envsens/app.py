@@ -37,6 +37,7 @@ async def show_data():
 
 
 class Datapoint(BaseModel):
+    timestamp: int
     co2: int
     rain: bool
     temp: int
@@ -44,13 +45,16 @@ class Datapoint(BaseModel):
     humid: int
 
 
-@app.post("/data/new")
-async def add_data_point(data: Datapoint, token: str = Security(api_key_header)):
+@app.post("/data/new", status_code=201)
+async def add_data_point(data: Datapoint, token: str = Security(api_key_header)) -> dict:
     async with aiofiles.open(os.environ.get("TOKEN_PATH"), mode='r') as f:
         expected_token = await f.read()
     if (expected_token == token):
-        await db.add_data_point(data.co2, data.rain, data.temp, data.press, data.humid)
+        await db.add_data_point(data.timestamp, data.co2, data.rain, data.temp, data.press, data.humid)
         predictions.predict_next()
+        return ({
+            "msg": "added datapoint for current time"
+        })
     else:
         raise HTTPException(status_code=403, detail="Forbidden")
 
