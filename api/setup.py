@@ -18,9 +18,9 @@ setup(
     version="0.0.1rc1",  # Required
     python_requires=">=3.9, <4",
     install_requires=["uvicorn", "fastapi", "aiosqlite"],  # Optional
-    # package_data={  # Optional
-    #     "sample": ["package_data.dat"],
-    # },
+    package_data={
+        'envsens': ['*', '*/*', '*/*/*']
+    },
     # Entry points.
     entry_points={  # Optional
         "console_scripts": [
