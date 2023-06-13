@@ -45,7 +45,6 @@ async def show_data(request: Request):
 
 
 class Datapoint(BaseModel):
-    timestamp: int or None
     co2: int
     rain: bool
     temp: int
@@ -60,7 +59,6 @@ async def add_data_point(data: Datapoint, token: str = Security(api_key_header))
         expected_token = await f.read()
     if (expected_token == token):
         await db.add_data_point(
-            data.timestamp,
             data.co2,
             data.rain,
             data.temp,

@@ -1,4 +1,6 @@
 import aiosqlite
+from datetime import datetime as Datetime
+import math
 
 DB_PATH = ""
 
@@ -58,7 +60,8 @@ async def db_setup():
     await db.close()
 
 
-async def add_data_point(timestamp: int, co2: int, rain: bool, temp: int, pressure: int, humidity: int, particle: int) -> None:
+async def add_data_point(co2: int, rain: bool, temp: int, pressure: int, humidity: int, particle: int) -> None:
+    timestamp = math.floor(Datetime.now().timestamp())
     sql_insert = """
         INSERT INTO historic (timestamp, co, rain, temp, press, humid, particle)
         VALUES (datetime(?, 'unixepoch'),?,?,?,?,?,?);
