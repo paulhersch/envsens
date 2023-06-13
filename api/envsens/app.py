@@ -1,5 +1,7 @@
-from fastapi import FastAPI, HTTPException, Security
+from fastapi import FastAPI, HTTPException, Security, Request
 from fastapi.security.api_key import APIKeyHeader
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import os
 import aiofiles
@@ -8,8 +10,9 @@ import envsens.predictions as predictions
 
 TOKEN_PATH = ""
 
-
 app = FastAPI()
+exec_dir = os.path.dirname(__file__)
+app.mount("/static", StaticFiles(directory=exec_dir + "/webview/static/"), name="static")
 api_key_header = APIKeyHeader(name="Bearer", auto_error=False)
 
 
@@ -20,6 +23,7 @@ async def shutdown():
 
 @app.on_event("startup")
 async def setup():
+    global TOKEN_PATH
     db_path = os.environ.get("DB_PATH")
     if db_path is None:
         raise Exception("DB_PATH not specified, can't save data")
@@ -30,19 +34,24 @@ async def setup():
     await db.db_setup()
 
 
-# this is supposed to display the webapp
-@app.get("/")
-async def show_data():
-    return await get_historic_data(14, 0)
+# this displays the webapp for the data
+# you could prehydrate the HTML here, but the
+# visualization is gonna be user controlled anyways
+@app.get("/", response_class=HTMLResponse)
+async def show_data(request: Request):
+    async with aiofiles.open(exec_dir + "/webview/main.html", mode='r') as f:
+        html = await f.read()
+    return html
 
 
 class Datapoint(BaseModel):
-    timestamp: int
+    timestamp: int or None
     co2: int
     rain: bool
     temp: int
     press: int
     humid: int
+    particle: int
 
 
 @app.post("/data/new", status_code=201)
@@ -50,7 +59,15 @@ async def add_data_point(data: Datapoint, token: str = Security(api_key_header))
     async with aiofiles.open(os.environ.get("TOKEN_PATH"), mode='r') as f:
         expected_token = await f.read()
     if (expected_token == token):
-        await db.add_data_point(data.timestamp, data.co2, data.rain, data.temp, data.press, data.humid)
+        await db.add_data_point(
+            data.timestamp,
+            data.co2,
+            data.rain,
+            data.temp,
+            data.press,
+            data.humid,
+            data.particle
+        )
         predictions.predict_next()
         return ({
             "msg": "added datapoint for current time"

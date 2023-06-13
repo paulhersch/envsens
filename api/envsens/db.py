@@ -33,6 +33,7 @@ async def db_setup():
         "temp"          INTEGER     NOT NULL,
         "press"         INTEGER     NOT NULL,
         "humid"         INTEGER     NOT NULL,
+        "particle"      INTEGER     NOT NULL,
         PRIMARY KEY (timestamp)
         CHECK(rain = 1 or rain = 0)
     );
@@ -45,6 +46,7 @@ async def db_setup():
         "temp"          INTEGER     NOT NULL,
         "press"         INTEGER     NOT NULL,
         "humid"         INTEGER     NOT NULL,
+        "particle"      INTEGER     NOT NULL,
         PRIMARY KEY (timestamp)
         CHECK(rain = 1 or rain = 0)
     );
@@ -56,15 +58,30 @@ async def db_setup():
     await db.close()
 
 
-async def add_data_point(timestamp: int, co2: int, rain: bool, temp: int, pressure: int, humidity: int) -> None:
+async def add_data_point(timestamp: int, co2: int, rain: bool, temp: int, pressure: int, humidity: int, particle: int) -> None:
     sql_insert = """
-        INSERT INTO historic (timestamp, co, rain, temp, press, humid)
-        VALUES (datetime(?, 'unixepoch'),?,?,?,?,?);
+        INSERT INTO historic (timestamp, co, rain, temp, press, humid, particle)
+        VALUES (datetime(?, 'unixepoch'),?,?,?,?,?,?);
     """
     db = await aiosqlite.connect(DB_PATH)
-    await db.execute(sql_insert, (timestamp, co2, rain, temp, pressure, humidity))
+    await db.execute(sql_insert, (timestamp, co2, rain, temp, pressure, humidity, particle))
     await db.commit()
     await db.close()
+
+
+def construct_dict_from_data(data: dict) -> dict:
+    ret = {"data": []}
+    for datapoint in data:
+        ret["data"].append({
+            "time": datapoint[0],
+            "co2": datapoint[1],
+            "rain": datapoint[2] == 1,
+            "temp": datapoint[3],
+            "press": datapoint[4],
+            "humid": datapoint[5],
+            "particle": datapoint[6]
+        })
+    return ret
 
 
 async def get_historic_data(days: int, hours: int):
@@ -77,19 +94,20 @@ async def get_historic_data(days: int, hours: int):
     sql_statement = f"""
         SELECT * FROM historic
         WHERE strftime('%s', timestamp) > strftime('%s', 'now', '-{days} days', '-{hours} hours')
-        ORDER BY timestamp DESC;
+        ORDER BY timestamp;
     """
     db = await aiosqlite.connect(DB_PATH)
     cursor = await db.execute(sql_statement)
     result = await cursor.fetchall()
     await cursor.close()
     await db.close()
-    return {"data": result}
+    # create json like dict
+    return construct_dict_from_data(result)
 
 
 async def get_predicted_data(hours: int):
     """
-    get historic data for next x hours
+    get predicted data for next x hours
     """
     sql_statement = f"""
         SELECT * FROM prediction
@@ -101,4 +119,4 @@ async def get_predicted_data(hours: int):
     result = await cursor.fetchall()
     await cursor.close()
     await db.close()
-    return {"data": result}
+    return construct_dict_from_data(result)

@@ -18,6 +18,7 @@
             fastapi
             uvicorn
             aiosqlite
+            aiofiles
         ]);
     in 
     with pkgs;
@@ -64,7 +65,7 @@
                             TOKEN_PATH="/var/lib/envsens/token";
                         };
                         serviceConfig = {
-                            ExecStart = "${self.packages.${system}.default}/bin/envsens-api --port 8888";
+                            ExecStart = "${self.packages.${system}.default}/bin/envsens-api --port 80";
                             Restart = "on-failure";
                             RestartSec = 5;
                         };

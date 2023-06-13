@@ -1,0 +1,96 @@
+:root {
+    --sidepanel-bg: #ffffff;
+    --button-bg: #b1e053;
+    --sidepanel-width: 320px;
+    --default-radius: 3px;
+}
+body {
+    background-color: #e3e3e3;
+    font-family: Sans-Serif;
+}
+
+.sidepanel-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidepanel-width);
+    display: grid;
+    align-items: center;
+}
+
+.sidepanel-item {
+    background-color: var(--sidepanel-bg);
+    padding: 0.5em;
+    margin: 0.5em;
+    box-shadow: 0 0 5px gray;
+}
+
+.sidepanel-item > *,
+.sidepanel-wrap > *{
+    display: block;
+    margin-top: 0.5em;
+}
+
+.sidepanel-item > *:first-child,
+.sidepanel-wrap > *:first-child{
+    margin-top: 0;
+}
+
+.chart-wrap {
+    position: fixed;
+    top: 0;
+    left: var(--sidepanel-width);
+    width: calc(100vw - var(--sidepanel-width));
+    height: 100%;
+}
+
+button {
+    margin-left: auto;
+    padding: 0.5em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #0000;
+    border-radius: var(--default-radius);
+    background-color: var(--button-bg);
+    transition: ease-in-out all 0.2s;
+}
+button:active,
+button:hover {
+    border-color: black;
+}
+
+.sel > select {
+    width: 100%;
+    padding: 0.5em;
+    border-radius: var(--default-radius);
+    transition: ease-in-out all 0.2s;
+    appearance: none;
+    position: relative;
+}
+
+.sel::after {
+    content: "\25b6";
+    position: absolute;
+    /*top: 1px;*/
+    right: 1em;
+    padding: 0.3em;
+    height: calc(2em - 0.6em - 2px);
+    background-color: var(--button-bg);
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 0 var(--default-radius) var(--default-radius) 0;
+    pointer-events: none;
+}
+
+select,
+select > * {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    cursor: pointer;
+}
+
+#datenansicht {
+    background-color: #fff;
+}

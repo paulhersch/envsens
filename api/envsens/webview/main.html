@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="/static/main.css?" no-cache>
+    <meta http-equiv='cache-control' content='no-cache'>
+    <script src="/static/chart.js" defer></script>
+    <script src="/static/main.js?v1" defer></script>
+</head>
+<body>
+    <div class="sidepanel-wrap">
+        <div class="sidepanel-item">
+            <div class="sel">
+                <select id="data-select">
+                    <option value="temp">Temperatur</option>
+                    <option value="co2">CO2-Menge</option>
+                    <option value="rain">Regen</option>
+                    <option value="press">Luftdruck</option>
+                    <option value="humid">Luftfeuchtigkeit</option>
+                    <option value="particle">Feinstaubkonzentration</option>
+                </select>
+            </div>
+            <p>
+                Die vorgegebenen Werte sind ohne Gewähr und ohne Ausschluss
+                jedweder Garantie gegeben.
+            </p>
+            <button type="button" style="display: block;" onclick="chart_for_data()">RELOAD CHART</button>
+        </div>
+    </div>
+    <div class="chart-wrap">
+        <canvas id="datenansicht">
+            Eine Grafik, die die Daten der Wetterstation zeigt
+        </canvas>
+    </div>
+</body>
