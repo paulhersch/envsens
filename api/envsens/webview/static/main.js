@@ -40,11 +40,11 @@ function array_from_data(data, item) {
 
 const label_lookup = {
     "temp": "Temperatur in °C",
-    "co2": "CO2-Menge in",
+    "co2": "CO2-Menge in ppm",
     "rain": "Regnet es?",
-    "press": "Luftdruck in hPa",
+    "press": "Luftdruck in mBar",
     "humid": "Relative Luftfeuchtigkeit in %",
-    "particle": "Feinstaubmenge in"
+    "particle": "Feinstaubmenge in µg/m³"
 }
 
 function chart_for_data() {

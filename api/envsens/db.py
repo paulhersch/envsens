@@ -60,14 +60,29 @@ async def db_setup():
     await db.close()
 
 
-async def add_data_point(co2: int, rain: bool, temp: int, pressure: int, humidity: int, particle: int) -> None:
+async def add_data_point(
+        co2: int,
+        rain: bool,
+        temp: int,
+        pressure: int,
+        humidity: int,
+        particle: int
+) -> None:
     timestamp = math.floor(Datetime.now().timestamp())
     sql_insert = """
         INSERT INTO historic (timestamp, co, rain, temp, press, humid, particle)
         VALUES (datetime(?, 'unixepoch'),?,?,?,?,?,?);
     """
     db = await aiosqlite.connect(DB_PATH)
-    await db.execute(sql_insert, (timestamp, co2, rain, temp, pressure, humidity, particle))
+    await db.execute(sql_insert, (
+        timestamp,
+        co2,
+        rain,
+        temp,
+        pressure,
+        humidity,
+        particle
+    ))
     await db.commit()
     await db.close()
 
@@ -85,6 +100,33 @@ def construct_dict_from_data(data: dict) -> dict:
             "particle": datapoint[6]
         })
     return ret
+
+
+async def add_pred(
+        date: Datetime,
+        co2: int,
+        rain: bool,
+        temperature: int,
+        pressure: int,
+        humidity: int,
+        particle: int
+) -> None:
+    sql_insert = """
+        INSERT INTO prediction (timestamp, co, rain, temp, press, humid, particle)
+        VALUES (datetime(?, 'unixepoch'),?,?,?,?,?,?);
+    """
+    db = await aiosqlite.connect(DB_PATH)
+    await db.execute(sql_insert, (
+        math.floor(date.timestamp()),
+        co2,
+        rain,
+        temperature,
+        pressure,
+        humidity,
+        particle
+    ))
+    await db.commit()
+    await db.close()
 
 
 async def get_historic_data(days: int, hours: int):
@@ -115,7 +157,7 @@ async def get_predicted_data(hours: int):
     sql_statement = f"""
         SELECT * FROM prediction
         WHERE strftime('%s', timestamp) BETWEEN strftime('%s', 'now') AND strftime('%s', 'now', '{hours} hours')
-        ORDER BY timestamp DESC;
+        ORDER BY timestamp;
     """
     db = await aiosqlite.connect(DB_PATH)
     cursor = await db.execute(sql_statement)

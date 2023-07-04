@@ -17,7 +17,7 @@ setup(
     name="envsens-api",  # Required
     version="0.0.1rc1",  # Required
     python_requires=">=3.9, <4",
-    install_requires=["uvicorn", "fastapi", "aiosqlite"],  # Optional
+    install_requires=["uvicorn", "fastapi", "aiosqlite", "sklearn", "tensorflow"],
     package_data={
         'envsens': ['*', '*/*', '*/*/*']
     },

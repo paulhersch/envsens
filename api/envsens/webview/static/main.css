@@ -91,6 +91,10 @@ select > * {
     cursor: pointer;
 }
 
+canvas {
+    box-shadow: 0 0 5px gray;
+}
+
 #datenansicht {
     background-color: #fff;
 }
