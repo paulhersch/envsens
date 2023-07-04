@@ -17,9 +17,18 @@ setup(
     name="envsens-api",  # Required
     version="0.0.1rc1",  # Required
     python_requires=">=3.9, <4",
-    install_requires=["uvicorn", "fastapi", "aiosqlite", "sklearn", "tensorflow"],
+    install_requires=[
+        "uvicorn",
+        "fastapi",
+        "aiosqlite",
+        "aiofiles",
+        "scikit-learn",
+        "tensorflow",
+        "numpy",
+        "keras",
+    ],
     package_data={
-        'envsens': ['*', '*/*', '*/*/*']
+        'envsens': ['webview', 'webview/*', 'webview/static/*']
     },
     # Entry points.
     entry_points={  # Optional
