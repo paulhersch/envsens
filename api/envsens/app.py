@@ -90,7 +90,7 @@ async def add_data_point(data: Datapoint, token: str = Security(api_key_header))
 
 
 @app.post("/esp_error")
-async def add_error_msg(data: ESPError, token: str = Security(api_key_header)) -> dict:
+async def add_error_msg(data: ESPError, token: str = Security(api_key_header)) -> None:
     if await check_token(token):
         print(f"ESP sent error: {data.msg}")
 
