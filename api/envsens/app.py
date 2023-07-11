@@ -95,13 +95,19 @@ async def add_error_msg(data: ESPError, token: str = Security(api_key_header)) -
         print(f"ESP sent error: {data.msg}")
 
 
+def format_db_datetime(data):
+    for dp in data:
+        dp['time'] = dp['time'].strftime("%Y-%m-%d %H:%M:%S")
+    return data
+
+
 @app.get("/data/historic")
 # this will return old data from the last x days
 async def get_historic_data(days: int = 0, hours: int = 0) -> dict:
-    return await db.get_historic_data(days, hours)
+    return format_db_datetime(await db.get_historic_data(days, hours))
 
 
 @app.get("/data/predictions")
 # get weather predictions for the next x hours
 async def get_predictions(hours: int = 0) -> dict:
-    return await db.get_predicted_data(hours)
+    return format_db_datetime(await db.get_predicted_data(hours))
