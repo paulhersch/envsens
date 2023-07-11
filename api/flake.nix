@@ -51,6 +51,11 @@
                 uvicorn
                 fastapi
                 aiosqlite
+		aiofiles
+		scikit-learn
+		keras
+		tensorflow
+		numpy
             ];
             nativeBuildInputs = with pkgs.python310Packages; [ setuptools-scm ];
         };
@@ -65,11 +70,13 @@
                 };
 
                 config = mkIf cfg.enable {
+                    users.groups.envsens = {};
                     users.users.envsens = {
                         name = "envsens";
                         group = "envsens";
                         description = "Envsens server user";
                         home = "/var/lib/envsens";
+		        isSystemUser = true;
                     };
                     systemd.services."envsens" = {
                         enable = true;
@@ -81,7 +88,7 @@
                             MODEL_PATH="/var/lib/envsens/models";
                         };
                         serviceConfig = {
-                            ExecStart = "${self.packages.${system}.default}/bin/envsens-api --port 80";
+                            ExecStart = "${self.packages.${system}.default}/bin/envsens-api --port 6632";
                             Restart = "on-failure";
                             RestartSec = 5;
                             User = "envsens";

@@ -27,7 +27,7 @@
     nixosConfigurations = {
       envsens-server = nixosSystem {
         system = "x86_64-linux";
-	      modules = [
+	modules = [
           inputs.envsens.nixosModules.apiservice
           ./nixos
           pkgs

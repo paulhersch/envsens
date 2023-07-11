@@ -58,7 +58,18 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 80 ]; 
+    # redirect port 80 to 6632 where envsens lives
+    extraCommands = ''
+      iptables -t nat -A OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-ports 6632
+    '';
   };
 
+  services.openssh = {
+    # everybody scans for 22, nobody will look at this source code
+    ports = [ 8008 ];
+    enable = true;
+    openFirewall = true;
+  };
+  
   system.stateVersion = "22.11";
 }

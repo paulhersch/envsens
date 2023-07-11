@@ -16,6 +16,7 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 setup(
     name="envsens-api",  # Required
     version="0.0.1rc1",  # Required
+    packages=['envsens'],
     python_requires=">=3.9, <4",
     install_requires=[
         "uvicorn",
@@ -28,7 +29,7 @@ setup(
         "keras",
     ],
     package_data={
-        'envsens': ['webview', 'webview/*', 'webview/static/*']
+        'envsens': ['*', '*/*', 'webview/static/*']
     },
     # Entry points.
     entry_points={  # Optional
