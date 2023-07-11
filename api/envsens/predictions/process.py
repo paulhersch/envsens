@@ -19,7 +19,10 @@ def time_to_sin(date: Datetime):
 
 # build arrays of weather data usable for the neural network
 def preprocess(historic):
-    sin_list = [(date_to_sin(date), time_to_sin(date)) for date in historic]
+    sin_list = [(
+        date_to_sin(datapoint['time']),
+        time_to_sin(datapoint['time'])
+    ) for datapoint in historic]
     processed_data = {}
     # for all data params
     for param in ['temp', 'press', 'co2', 'humid', 'particle']:

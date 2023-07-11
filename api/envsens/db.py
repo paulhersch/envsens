@@ -91,7 +91,7 @@ def construct_dict_from_data(data: dict) -> dict:
     ret = {"data": []}
     for datapoint in data:
         ret["data"].append({
-            "time": datapoint[0],
+            "time": Datetime.strptime(datapoint[0], "%Y-%m-%d %h:%m:%s"),
             "co2": datapoint[1],
             "rain": datapoint[2] == 1,
             "temp": datapoint[3],
@@ -138,7 +138,8 @@ async def get_historic_data(days: int, hours: int):
     # put the ? placeholder in a string
     sql_statement = f"""
         SELECT * FROM historic
-        WHERE strftime('%s', timestamp) > strftime('%s', 'now', '-{days} days', '-{hours} hours')
+        WHERE
+            strftime('%s', timestamp) > strftime('%s', 'now', '-{days} days', '-{hours} hours')
         ORDER BY timestamp;
     """
     db = await aiosqlite.connect(DB_PATH)
@@ -156,7 +157,8 @@ async def get_predicted_data(hours: int):
     """
     sql_statement = f"""
         SELECT * FROM prediction
-        WHERE strftime('%s', timestamp) BETWEEN strftime('%s', 'now') AND strftime('%s', 'now', '{hours} hours')
+        WHERE strftime('%s', timestamp) BETWEEN strftime('%s', 'now')
+            AND strftime('%s', 'now', '{hours} hours')
         ORDER BY timestamp;
     """
     db = await aiosqlite.connect(DB_PATH)
