@@ -61,7 +61,7 @@ def predict(data):
         for i in range(len(part_data), len(part_data) + 6):
             out["particle"]["data"].append(fit(i))
 
-    except {FileNotFoundError, NotFoundError}:
+    except (FileNotFoundError, NotFoundError):
         print("Model not found")
 
     finally:
