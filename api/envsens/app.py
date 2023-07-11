@@ -12,7 +12,11 @@ TOKEN_PATH = ""
 
 app = FastAPI()
 exec_dir = os.path.dirname(__file__)
-app.mount("/static", StaticFiles(directory=exec_dir + "/webview/static/"), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=exec_dir + "/webview/static/"),
+    name="static"
+)
 api_key_header = APIKeyHeader(name="Bearer", auto_error=False)
 
 
@@ -30,7 +34,9 @@ async def setup():
     db.DB_PATH = db_path
     TOKEN_PATH = os.environ.get("TOKEN_PATH")
     if TOKEN_PATH is None:
-        raise Exception("No Token for PUT operations specified, API may not be fully functional")
+        raise Exception(
+            "No Token for PUT operations specified, API may not be fully functional"
+        )
     await db.db_setup()
 
 
@@ -53,11 +59,18 @@ class Datapoint(BaseModel):
     particle: int
 
 
-@app.post("/data/new", status_code=201)
-async def add_data_point(data: Datapoint, token: str = Security(api_key_header)) -> dict:
+async def check_token(token):
     async with aiofiles.open(os.environ.get("TOKEN_PATH"), mode='r') as f:
         expected_token = await f.read()
-    if (expected_token == token):
+        if (expected_token == token):
+            return True
+        else:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+
+@app.post("/data/new", status_code=201)
+async def add_data_point(data: Datapoint, token: str = Security(api_key_header)) -> dict:
+    if await check_token(token):
         await db.add_data_point(
             data.co2,
             data.rain,
@@ -70,8 +83,12 @@ async def add_data_point(data: Datapoint, token: str = Security(api_key_header))
         return ({
             "msg": "added datapoint for current time"
         })
-    else:
-        raise HTTPException(status_code=403, detail="Forbidden")
+
+
+@app.post("/esp_error")
+async def add_error_msg(msg: str, token: str = Security(api_key_header)) -> dict:
+    if await check_token(token):
+        print(f"ESP sent error: {msg}")
 
 
 @app.get("/data/historic")
@@ -82,5 +99,5 @@ async def get_historic_data(days: int = 0, hours: int = 0) -> dict:
 
 @app.get("/data/predictions")
 # get weather predictions for the next x hours
-async def get_predictions_for(hours: int = 0) -> dict:
+async def get_predictions(hours: int = 0) -> dict:
     return await db.get_predicted_data(hours)
