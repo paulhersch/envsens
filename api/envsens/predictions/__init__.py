@@ -38,17 +38,13 @@ async def __main():
 
 
 def __start_prediction():
-    try:
-        asyncio.run(__main())
-    except:
-        print("not enough old entries for prediction")
-    finally:
-        global __RUNNING__, __RERUN_WANTED__
-        if __RERUN_WANTED__:
-            Thread(target=__start_prediction).start()
-            __RERUN_WANTED__ = False
-        else:
-            __RUNNING__ = False
+    asyncio.run(__main())
+    global __RUNNING__, __RERUN_WANTED__
+    if __RERUN_WANTED__:
+        Thread(target=__start_prediction).start()
+        __RERUN_WANTED__ = False
+    else:
+        __RUNNING__ = False
 
 
 # Check if prediction Task is already in progress
