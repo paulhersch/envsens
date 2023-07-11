@@ -59,6 +59,10 @@ class Datapoint(BaseModel):
     particle: int
 
 
+class ESPError(BaseModel):
+    msg: str
+
+
 async def check_token(token):
     async with aiofiles.open(os.environ.get("TOKEN_PATH"), mode='r') as f:
         expected_token = await f.read()
@@ -86,9 +90,9 @@ async def add_data_point(data: Datapoint, token: str = Security(api_key_header))
 
 
 @app.post("/esp_error")
-async def add_error_msg(msg: str, token: str = Security(api_key_header)) -> dict:
+async def add_error_msg(data: ESPError, token: str = Security(api_key_header)) -> dict:
     if await check_token(token):
-        print(f"ESP sent error: {msg}")
+        print(f"ESP sent error: {data.msg}")
 
 
 @app.get("/data/historic")

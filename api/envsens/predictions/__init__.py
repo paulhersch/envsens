@@ -13,7 +13,7 @@ __RERUN_WANTED__ = False
 
 
 async def __main():
-    historic = await get_historic_data(6, 0)
+    historic = (await get_historic_data(6, 0))['data']
     # model can only work with exactly 240 entries
     if len(historic) < 240:
         print("Not enough old entries, skipping prediction")
