@@ -28,6 +28,19 @@
 
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp3s0.useDHCP = lib.mkDefault true;
+  networking.
+
+  networking = {
+    interfaces.enp3s0 = {
+      useDHCP = false;
+      ipv4.addresses = [{
+        address="141.48.166.198";
+        prefixLength=24;
+      }];
+    };
+    defaultGateway = "141.48.166.254";
+    nameservers = [ "141.48.95.16" "141.48.3.3" ];
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
