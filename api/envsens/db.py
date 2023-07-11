@@ -91,7 +91,7 @@ def construct_dict_from_data(data: dict) -> dict:
     ret = {"data": []}
     for datapoint in data:
         ret["data"].append({
-            "time": Datetime.strptime(datapoint[0], "%Y-%m-%d %h:%m:%s"),
+            "time": Datetime.strptime(datapoint[0], "%Y-%m-%d %H:%M:%S"),
             "co2": datapoint[1],
             "rain": datapoint[2] == 1,
             "temp": datapoint[3],
