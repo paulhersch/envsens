@@ -16,14 +16,14 @@ async def __main():
     historic = await get_historic_data(6, 0)
     # model can only work with exactly 240 entries
     if len(historic) < 240:
-        raise Exception("Not enough old entries")
+        print("Not enough old entries, skipping prediction")
+        return
     historic = historic[:-240]
     processed = preprocess(historic)
     predicted_blocks = predict(processed)
-    # save predicted blocks in db
     unpacked = unprocess(predicted_blocks)
     # inverse processed data does not have timestamps -> add them
-    # via timedelta, diff between predictions is 30 mins
+    # via timedelta, diff between predictions is supposed to be 30 mins
     for delta_sec in [1800 * i for i in range(1, len(unpacked) + 1)]:
         last_time = historic[-1]["time"]
         # "time" would be the more correct name to comply with the stupid
@@ -32,6 +32,7 @@ async def __main():
         # prod you should definitely use Pydantic models or smth)
         unpacked["date"] = last_time + timedelta(seconds=delta_sec)
 
+    # save predicted blocks in db
     for dp_pred in unpacked:
         add_pred(**dp_pred)
 

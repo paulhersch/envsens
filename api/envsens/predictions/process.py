@@ -42,22 +42,18 @@ def preprocess(historic):
         "co2": {
             "data": [],
             "scaler": processed_data["co2_scaler"]
-
         },
         "humid": {
             "data": [],
             "scaler": processed_data["humid_scaler"]
-
         },
         "press": {
             "data": [],
             "scaler": processed_data["press_scaler"]
-
         },
         "particle": {
             "data": [],
             "scaler": processed_data["particle_scaler"]
-
         },
     }
 
@@ -103,22 +99,22 @@ def unprocess(processed_data):
         out.append({
             # use the scaler from the processed data dict and inverse the transformation
             "co2": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
             "rain": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
             "temp": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
             "press": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
             "humid": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
             "particle": processed_data["co2"]["scaler"].inverse_transform(
-                processed_data["co2"][i]
+                processed_data["co2"][i][0]
             ),
         })
 
