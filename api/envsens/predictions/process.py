@@ -1,4 +1,5 @@
 from datetime import datetime as Datetime
+from numpy import reshape
 import math
 from sklearn.preprocessing import MinMaxScaler
 
@@ -27,15 +28,19 @@ def preprocess(historic):
     # for all data params
     for param in ['temp', 'press', 'co2', 'humid', 'particle']:
         data = [datapoint[param] for datapoint in historic]
+        data = reshape(data, (-1, 1))
         # normalize in range 0 to 1
         scaler = MinMaxScaler(feature_range=(0, 1))
         processed_data[f"{param}_list"] = scaler.fit_transform(data)
         processed_data[f"{param}_scaler"] = scaler
 
     # rain is 0 or 1 anyways, thats why its excluded
-    processed_data["rain_list"] = []
+    preshape = []
     for v in historic:
-        processed_data["rain_list"].append(v["rain"])
+        preshape.append(v["rain"])
+
+    processed_data["rain_list"] = reshape(preshape, (-1, 1))
+    preshape = None
 
     out = {
         "temp": {

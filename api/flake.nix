@@ -51,11 +51,11 @@
                 uvicorn
                 fastapi
                 aiosqlite
-		aiofiles
-		scikit-learn
-		keras
-		tensorflow
-		numpy
+                aiofiles
+                scikit-learn
+                keras
+                tensorflow
+                numpy
             ];
             nativeBuildInputs = with pkgs.python310Packages; [ setuptools-scm ];
         };
