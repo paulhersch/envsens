@@ -96,7 +96,7 @@ async def add_error_msg(data: ESPError, token: str = Security(api_key_header)) -
 
 
 def format_db_datetime(data):
-    for dp in data:
+    for dp in data['data']:
         dp['time'] = dp['time'].strftime("%Y-%m-%d %H:%M:%S")
     return data
 

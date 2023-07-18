@@ -41,6 +41,7 @@ def predict(data):
         model.add(Dense(dims))
         return model
     try:
+        # create models and predict the next blocks into the out dict
         for param in ['temp', 'press', 'co2']:
             model = create_model(3)
             model.load_weights(f"{param}_weights.h5")
@@ -50,7 +51,9 @@ def predict(data):
         humid_model.load_weights("humid_weights.h5")
         out["humid"]["data"] = humid_model.predict(data["humid"]["data"])
 
-        # predict particle via linfit
+        # predict particle via linfit (no data from Jena for us,
+        # the future position of the ESP would also be too close to some
+        # other factors that could taint the data)
         part_data = data["particle"]["data"]
         coeff = np.polyfit(
             np.linspace(0, len(part_data), len(part_data)),
@@ -62,7 +65,7 @@ def predict(data):
             out["particle"]["data"].append(fit(i))
 
     except (FileNotFoundError, NotFoundError):
-        print("Model not found")
+        print("Models not found")
 
     finally:
         return out

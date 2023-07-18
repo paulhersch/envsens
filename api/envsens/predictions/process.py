@@ -26,13 +26,13 @@ def preprocess(historic):
     processed_data = {}
     # for all data params
     for param in ['temp', 'press', 'co2', 'humid', 'particle']:
-        data = []
-        # normalize 0 to 1
+        data = [datapoint[param] for datapoint in historic]
+        # normalize in range 0 to 1
         scaler = MinMaxScaler(feature_range=(0, 1))
         processed_data[f"{param}_list"] = scaler.fit_transform(data)
         processed_data[f"{param}_scaler"] = scaler
 
-    # rain is 0 or 1 anyways
+    # rain is 0 or 1 anyways, thats why its excluded
     processed_data["rain_list"] = []
     for v in historic:
         processed_data["rain_list"].append(v["rain"])
