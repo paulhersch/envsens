@@ -1,5 +1,5 @@
 # What is this?
-These are basic configuration files used by the server to run the API and serve the web app for our Energy Sensor.
+These are basic configuration files used by the server to run the API and serve the web app for our Environment Sensor.
 
 The API is meant to be used by the ESP to send current data and give the web app the ability to
 retrieve current data and predictions from the server
